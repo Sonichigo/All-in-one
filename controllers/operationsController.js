@@ -3,17 +3,18 @@
 exports.getFeed = async (req, res) => {
 	const { createClient } = require("@astrajs/collections");
 	const astraClient = await createClient({
-		astraDatabaseId: "bf446f4c-f4ea-4dcf-8253-2f60fcceae9a",
+		astraDatabaseId: process.env.ASTRA_DB_ID,
 		astraDatabaseRegion: process.env.ASTRA_DB_REGION,
-		applicationToken: "AstraCS:BjdGHtbnHkSatsiHHZvBkNsC:c053bfe3493d4020577d0437fc5aad51e10f96abaf6a4667665f0a5d298a76f7",
-	});
+		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
+		});
 
-	const postsCollection = astraClient.namespace("spyfall").collection("postsCollection");
+	const spyfallsCollection = astraClient.namespace("spyfalls").collection("spyfallsCollection");
 
-	const posts = await postsCollection.find({});
-	const response = Object.keys(posts).map((key) => ({
+	const spyfalls = await spyfallsCollection.findOne({});
+	console.log(spyfalls)
+	const response = Object.keys(spyfalls).map((key) => ({
 		id: key,
-		...posts[key]
+		...spyfalls[key]
 	}));
 
 	res.json(response);
@@ -24,16 +25,16 @@ exports.createFeed = async (req, res) => {
 	const astraClient = await createClient({
 		astraDatabaseId: process.env.ASTRA_DB_ID,
 		astraDatabaseRegion: process.env.ASTRA_DB_REGION,
-		applicationToken: "AstraCS:BjdGHtbnHkSatsiHHZvBkNsC:c053bfe3493d4020577d0437fc5aad51e10f96abaf6a4667665f0a5d298a76f7",
+		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
 	});
 
-	const postsCollection = astraClient.namespace("spyfall").collection("postsCollection");
+	const spyfallsCollection = astraClient.namespace("spyfalls").collection("spyfallsCollection");
 
-	const post = await postsCollection.create({
+	const spyfall = await spyfallsCollection.create({
 		"username": req.body.username,
 		"postImg": req.body.postImg,
 		"caption": req.body.caption,
-		"points": req.body.points
+		"point": req.body.point
 	});
 
 	res.send("POST request was successfully completed.");
@@ -44,10 +45,10 @@ exports.getTasks = async (req, res) => {
 	const astraClient = await createClient({
 		astraDatabaseId: process.env.ASTRA_DB_ID,
 		astraDatabaseRegion: process.env.ASTRA_DB_REGION,
-		applicationToken: "AstraCS:BjdGHtbnHkSatsiHHZvBkNsC:c053bfe3493d4020577d0437fc5aad51e10f96abaf6a4667665f0a5d298a76f7",
+		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
 	});
 
-	const tasksCollection = astraClient.namespace("spyfall").collection("tasksCollection");
+	const tasksCollection = astraClient.namespace("spyfalls").collection("tasksCollection");
 
 	const tasks = await tasksCollection.find({});
 	const response = Object.keys(tasks).map((key) => ({
