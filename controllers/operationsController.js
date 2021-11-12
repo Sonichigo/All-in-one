@@ -7,14 +7,13 @@ exports.getFeed = async (req, res) => {
 		astraDatabaseRegion: process.env.ASTRA_DB_REGION,
 		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
 		});
+	const spyfallsCollection = astraClient.namespace(`spyfalls`).collection(`spyfallscollection`);
 
-	const spyfallsCollection = astraClient.namespace("spyfalls").collection("spyfallsCollection");
-
-	const spyfalls = await spyfallsCollection.findOne({});
-	console.log(spyfalls)
-	const response = Object.keys(spyfalls).map((key) => ({
+	const spyfall = await spyfallsCollection.find({});
+	console.log(spyfall)
+	const response = Object.keys(spyfall).map((key) => ({
 		id: key,
-		...spyfalls[key]
+		...spyfall[key]
 	}));
 
 	res.json(response);
