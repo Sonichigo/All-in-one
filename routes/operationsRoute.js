@@ -12,4 +12,9 @@ route
 	.route("/tasks")
 	.get(operationsController.getTasks);
 
+route
+	.route("/sawo")
+	.get(operationsController.getSawo)
+	.post(operationsController.createSawo);
+
 module.exports = route;
