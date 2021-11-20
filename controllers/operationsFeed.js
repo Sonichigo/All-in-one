@@ -1,4 +1,4 @@
-exports.getTasks = async (req, res) => {
+exports.getFeed = async (req, res) => {
 	const { createClient } = require("@astrajs/collections");
 	const astraClient = await createClient({
 		astraDatabaseId: process.env.ASTRA_DB_ID,
@@ -6,18 +6,18 @@ exports.getTasks = async (req, res) => {
 		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
 	});
 
-	const tasksCollection = astraClient.namespace("feed").collection("taskCollection");
+	const postsCollection = astraClient.namespace("feed").collection("postsCollection");
 
-	const tasks = await tasksCollection.find({});
-	const response = Object.keys(tasks).map((key) => ({
+	const posts = await postsCollection.find({});
+	const response = Object.keys(posts).map((key) => ({
 		id: key,
-		...tasks[key]
+		...posts[key]
 	}));
 
 	res.json(response);
-}
+};
 
-exports.createTask = async (req, res) => {
+exports.createFeed = async (req, res) => {
 	const { createClient } = require("@astrajs/collections");
 	const astraClient = await createClient({
 		astraDatabaseId: process.env.ASTRA_DB_ID,
@@ -25,11 +25,14 @@ exports.createTask = async (req, res) => {
 		applicationToken: process.env.ASTRA_DB_APPLICATION_TOKEN,
 	});
 
-	const taskCollection = astraClient.namespace("feed").collection("taskCollection");
+	const postsCollection = astraClient.namespace("feed").collection("postsCollection");
 
-	const post = await taskCollection.create({
-		"task": req.body.task
+	const post = await postsCollection.create({
+		"username": req.body.username,
+		"postImg": req.body.postImg,
+		"caption": req.body.caption,
+		"points": req.body.points
 	});
-	console.log(req);
+
 	res.send("POST request was successfully completed.");
 };
